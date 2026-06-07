@@ -1,0 +1,7 @@
+﻿.vs/
+bin/
+obj/
+# 프로그램 생성파일
+FailImages/
+inspection_log.csv
+roi.txt
