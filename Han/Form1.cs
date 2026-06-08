@@ -149,33 +149,28 @@ namespace Han
             {
                 lblResult.ForeColor = Color.Red;
                 lblResult.Text = "● Fail";
-
-                // FAIL 이미지 저장
                 string failFolder = Path.Combine(Application.StartupPath, "FailImages");
-                Cv2.ImWrite("roi_debug.png", roiImage);
-                Cv2.ImWrite("template_debug.png", template);
-
                 Directory.CreateDirectory(failFolder);
+                string timeStamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string saveFolder = Path.Combine(failFolder, timeStamp);
+                Directory.CreateDirectory(saveFolder);
 
-                string fileName = Path.GetFileNameWithoutExtension(currentImagePath);
-                string extension = Path.GetExtension(currentImagePath);
-                string savePath = Path.Combine(
-                    failFolder,
-                    $"{DateTime.Now:yyyyMMdd_HHmmss}_{fileName}{extension}"
-                );
-
+                Mat failImg = img.Clone();
                 // ROI 영역 표시
                 Cv2.Rectangle(
-                    img,
+                    failImg,
                     roi,
                     new Scalar(0, 0, 255),
-                    3  // 선 두께
+                    3
                 );
-                Cv2.ImWrite(savePath, img);
 
-                MessageBox.Show($"FAIL 이미지 저장됨\n{savePath}");
+                string failImagePath = Path.Combine(saveFolder, "fail.png");
+                Cv2.ImWrite(failImagePath, failImg);
+                string templateSavePath = Path.Combine(saveFolder, "template.png");
+                Cv2.ImWrite(templateSavePath, template);
+                MessageBox.Show($"FAIL 이미지 저장됨\n{saveFolder}");
             }
-            
+
             lblSimilarity.Text = $"유사도 : {similarity:F3}\r\n기준 : {threshold:F2}";
 
             string logFileName = Path.GetFileName(currentImagePath);
